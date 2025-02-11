@@ -1,114 +1,233 @@
+
+
+
+
+"use client";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import Header from "@/component/header";
+import Footer from "@/component/footer";
+import Hydration from "@/component/hydration"
+import Link from "next/link";
+import RoadMap from "@/component/roadmap";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+export default function AnimatedCircle() {
+  const circleRef = useRef(null);
+  const textRef = useRef(null);
+  const botolCapRef = useRef(null);
+  const botolRef = useRef(null);
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  const leftIconRef = useRef(null);
+  const rightIconRef = useRef(null);
 
-export default function Home() {
+  const categories = [
+    { icon: "/veccume.svg", label: "Vacuum Bottles" },
+    { icon: "/fridge.svg", label: "Fridge Bottles & Jugs" },
+    { icon: "/borosilicate.svg", label: "Borosilicate Bottles" },
+    { icon: "/kettle.svg", label: "Kettles" },
+  ];
+
+  useEffect(() => {
+    let ScrollTrigger;
+    import("gsap/ScrollTrigger").then((module) => {
+      ScrollTrigger = module.default;
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Animating circle expansion
+      gsap.to(circleRef.current, {
+        width: "550px",
+        height: "550px",
+        delay: 1.5,
+        duration: 1.8,
+        ease: "power1.inOut",
+      });
+
+      // Animating Text appearance
+      gsap.to(textRef.current, {
+        opacity: 1,
+        scale: 1,
+        delay: 1.5,
+        duration: 1.8,
+        ease: "power1.inOut",
+      });
+
+      // Animating Bottle Cap
+      gsap.to(botolCapRef.current, {
+        y: "-135px",
+        delay: 1.5,
+        duration: 1.8,
+        ease: "power1.inOut",
+        onComplete: () => {
+          ScrollTrigger.refresh();
+
+          gsap.to(botolCapRef.current, {
+            scrollTrigger: {
+              trigger: botolCapRef.current,
+              start: "300% 50%",
+              end: "430% 5%",
+              scrub: 1,
+              // markers: true,
+              immediateRender: false,
+            },
+            y: "785px",
+            width: 140,
+            duration: 1.5,
+            ease: "none",
+          });
+        },
+      });
+
+      // Animating Bottle Body
+      gsap.to(botolRef.current, {
+        y: 110,
+        delay: 1.5,
+        duration: 1.8,
+        ease: "power1.inOut",
+        onComplete: () => {
+          ScrollTrigger.refresh();
+
+          gsap.to(botolRef.current, {
+            scrollTrigger: {
+              trigger: botolRef.current,
+              start: "top 50%",
+              end: "bottom 60%",
+              scrub: 1,
+              immediateRender: false,
+            },
+            y: "620px",
+            width: 140,
+            duration: 1,
+            ease: "none",
+          });
+        },
+      });
+    });
+
+
+  }, []);
+  useEffect(() => {
+    let ScrollTrigger;
+    import("gsap/ScrollTrigger").then((module) => {
+      ScrollTrigger = module.default;
+      gsap.registerPlugin(ScrollTrigger);
+  
+      // Initial appearance animation
+      gsap.fromTo(
+        [leftIconRef.current, rightIconRef.current],
+        { opacity: 0, scale: 0.8 },
+        {
+          opacity: 1,
+          scale: 1,
+          delay: 1.5,
+          duration: 1.5, // Slightly reduced duration for a snappier feel
+          ease: "power2.out",
+        }
+      );
+  
+      // Scroll-triggered movement (smooth upward motion)
+      gsap.to([leftIconRef.current, rightIconRef.current], {
+        y: -380, // Moves up by 380px
+        scale: 0,
+        // opacity: 0,  
+        ease: "power2.in", // Smooth transition
+        // duration: 0.5,
+        scrollTrigger: {
+          trigger: leftIconRef.current, // Uses left icon as the trigger
+          start: "top 70%", // Starts moving early
+          end: "top 20%", // Moves up gradually
+          // markers: true,
+          scrub: 1, // Smooth, scroll-driven effect
+        },
+      });
+    });
+  }, []);
+  
+  
+  
+
+
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <>
+      <Header />
+      <div className="h-screen bg-gray-100">
+        {/* <div className="w-full h-20 bg-gray-700 text-center p-4 text-4xl">
+          This is a Header
+        </div> */}
+        <div
+          ref={botolCapRef}
+          className="w-[160px] h-[160px] absolute bottom-1/2 translate-y-32 right-1/2 translate-x-1/2 z-20"
+        >
+          <Image src="/bottle-cap.svg" alt="Bottle cap" width={160} height={160} />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div
+          ref={botolRef}
+          className="absolute top-1/2 -translate-y-10 right-1/2 translate-x-1/2 z-20"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <Image src="/bottle-down.svg" alt="Bottle Body" width={160} height={160} />
+        </div>
+        <div className="w-full h-[calc(100vh-2rem)] relative ">
+          <div
+            ref={circleRef}
+            className="circle flex items-center justify-center text-center rounded-full overflow-hidden absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2"
+            style={{
+              width: "300px",
+              height: "300px",
+              background: "transparent",
+              border: "8px solid transparent",
+              backgroundImage: "linear-gradient(to bottom, #4DFBFB, #788EFF)",
+              backgroundOrigin: "border-box",
+            }}
+          >
+            <div className="w-[99%] h-[99%] bg-white rounded-full"></div>
+          </div>
+
+          <div
+            ref={textRef}
+            className="circle-text text-center opacity-0 scale-0 text-black absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2 z-10"
+          >
+            <h2 className="text-7xl text-center w-[850px] font-bold">
+              The Ultimate Companion for Hydration
+            </h2>
+            <p className="mt-2 text-2xl mx-auto max-w-[30rem] text-center">
+              We believe in the power of hydration. Our mission is simple yet vital.
+            </p>
+            <Link href="/inquiry">
+              <button className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-5 py-2 rounded-full shadow-md hover:scale-105 transition">
+                Inquiry Now
+              </button>
+            </Link>
+          </div>
+        </div>
+        <Image ref={leftIconRef} src="/bottle2.svg" alt="Left Icon" width={100} height={100} className=" p-5 left-10 bottom-10 bg-gradient-to-r absolute from-cyan-400 to-blue-500 rounded-full shadow-md hover:scale-105 transition flex items-center justify-center w-32 h-32" />
+        <Image ref={rightIconRef} src="/bottle3.svg" alt="Right Icon" width={150} height={150} className=" p-5 right-10 bottom-10 bg-gradient-to-r absolute from-cyan-400 to-blue-500 rounded-full shadow-md hover:scale-105 transition flex items-center justify-center w-32 h-32" />
+      </div>
+      <div className="w-full h-[800px] flex">
+        <div className="relative w-full h-full">
+          <Image src="/sidebottle.svg" alt="Bottle in hand" fill objectFit="cover" />
+        </div>
+        <div className="flex items-center w-full h-full bg-[#20292C] text-white rounded-lg">
+          {/* Left Image */}
+          <div className="w-1/3">
+
+          </div>
+
+          {/* Category List */}
+          <div className="w-2/3 space-y-10">
+            {categories.map((item, index) => (
+              <div key={index} className="flex items-center space-x-5">
+                <div className=" flex items-center justify-center bg-white rounded-full">
+                  <span className="text-4xl p-2"><Image src={item.icon} alt={item.label} height={60} width={60} /></span>
+                </div>
+                <span className="text-lg">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Hydration />
+      <RoadMap/>
+      <Footer />
+    </>
   );
 }
